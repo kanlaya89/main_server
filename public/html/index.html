@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+  <title>Sensor Visualization</title>
+  
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script type='text/javascript' src="../js/epoch.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../css/epoch.min.css">
+
+  <script src="../js/index.js"></script>
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  
+</head>
+<body ng-app="SENSOR">
+<h1>Sensor Visualization</h1>
+<div id="content">
+  <form name="myForm" ng-controller="myCtl1" id="form">
+    <h3>Room</h3>
+    <button class="button" ng-click="r709()">709</button>
+    <button class="button" ng-click="r711()">711</button>
+    <button class="button" ng-click="r805()">805</button>
+    <button class="button" ng-click="r806()">806</button>
+    <p>Room <span ng-bind="room"></span></p>
+    <p>温度：<span id="temp"></span></p>
+    <div id="tempChart" class="epoch category20" style=" height: 150px"></div>
+    <p>照度：<span id="ill"></span></p>
+    <div id="illChart" class="epoch category20" style=" height: 150px"></div>
+  </form>
+</div>
+</body>
+</html>

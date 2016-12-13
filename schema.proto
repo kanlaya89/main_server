@@ -8,7 +8,8 @@ message type1 {
 	repeated int32 no2 = 5 [packed=true];
 }
 
-message HostName {
-	string node_name = 1;
-	string host_name = 2;
+message AllSensors {
+	float temp = 1;
+	int32 ill = 2;
+	string room = 3;
 }

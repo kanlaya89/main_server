@@ -6,6 +6,7 @@ var io = require('socket.io')(http);
 var mqtt = require('mqtt');
 var protobuf = require('protocol-buffers');
 var mongoose = require('mongoose');
+var mosca = require('mosca');
 var db = mongoose.connection;
 var fs = require('fs');
 var os = require('os');
@@ -38,17 +39,16 @@ var saveHost = function (data) {
 
 // -----------------------------------
 // setting: Broker
-// var settings = {
-//   port: BrokerPort,
-//   persistence: mosca.persistence.Memory
-// };
+var settings = {
+  port: BrokerPort,
+  persistence: mosca.persistence.Memory
+};
 
 // -----------------------------------
 //  run: Broker
-// var Broker =  new mosca.Server(settings, function(){
-//   console.log("Mosca is running")
-// });
-
+var Broker =  new mosca.Server(settings, function(){
+  console.log("Mosca is running");
+});
 
 // ------------------------------
 // connect: MongoDB, Broker, Socket
@@ -59,8 +59,8 @@ db.once('open', function() {
 	console.log('MongoDB is connected');
 });
 // broker
-// client = mqtt.connect('mqtt://' + BrokerIP + ':' + BrokerPort);
-client = mqtt.connect('mqtt://' + BrokerIP);
+client = mqtt.connect('mqtt://' + BrokerIP + ':' + BrokerPort);
+// client = mqtt.connect('mqtt://' + BrokerIP);
 client.on('connect', function(ck) {
 	console.log('Connected to Broker')
 });
@@ -71,24 +71,23 @@ client.subscribe('room/#');
 
 // ------------------------------
 // mqtt: Initial Publish
-// client.publish('server/room/all/hostname');
 
 // ------------------------------
 // mqtt: On topic
 client.on('message', function(topic, payload) {
-  if(topic.indexOf('hostname') >- 1) {
-  	var hostdata = portobuf_schema.HostName.decode(payload);
-		console.log('node_name:'+hostdata.node_name +' host_name:'+hostdata.host_name);
-		console.log(topic, payload.toString());
-    // saveHost(hostdata);
-
-  }
+  var data;
+  if(topic.indexOf('sensor/all') >- 1) {
+    data = portobuf_schema.AllSensors.decode(payload);
+    io.emit('allSensors', data);
+    console.log(topic, data);
+  };
 });
 
 // ------------------------------
 // socket: on
 io.on('connection', function(socket){
   socket.on('room', function(number){
+    console.log("clicked: "+ number);
     client.publish('server/room/'+number+'/sensor/all');
   });
 });
