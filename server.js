@@ -1,4 +1,5 @@
 var express = require('express'); 
+var router = express.Router();
 var app = express();
 var http = require('http').Server(app);
 var bodyParser = require('body-parser');
@@ -22,20 +23,15 @@ var BrokerIP = require("./config").BrokerIP
 var BrokerPort = require("./config").BrokerPort;
 var ListenPort = require("./config").ListenPort;
 
+var HtmlPath = ("/public/html/");
 var portobuf_schema = protobuf(fs.readFileSync('schema.proto'));
 var mogoHost = require("./mongoModel").host;
 
 "use strict";
 // -----------------------------------
 //  TESTING
-var saveHost = function (data) {
-  var newHost = new mogoHost();
-  newHost.host = {node_name: data.node_name, host_name: data.host_name};
-  newHost.save( function(err){
-    if(err) throw err;
-    console.log("save host: " + data.node_name);
-  })
-};
+// parameter middleware that will run before the next routes
+
 
 // -----------------------------------
 // setting: Broker
@@ -93,9 +89,14 @@ io.on('connection', function(socket){
 });
 
 // ------------------------------
-// html
+// html: API
 app.get('/', function (req, res) {
-   res.sendFile(__dirname + "/public/html/index.html" );
+   res.sendFile(__dirname + HtmlPath + "index.html" );
+});
+app.get('/room/:number', function (req, res) {
+  var number = req.param('number');
+  res.sendFile(__dirname + HtmlPath + "room.html?number=" + number);
+  console.log('room number', number);
 });
 
 // ------------------------------

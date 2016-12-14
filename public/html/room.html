@@ -5,7 +5,6 @@
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
 
   <title>Sensor Visualization</title>
-  
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
@@ -21,17 +20,6 @@
   
 </head>
 <body ng-app="SENSOR">
-<h1>Sensor Visualization</h1>
-<div id="content">
-  <form name="myForm" ng-controller="myCtl1" id="form">
-    <button button ng-repeat="number in rooms"><a ng-href="/room/{{number}}">{{number}}</a></button>
-    
-    <p>Room <span ng-bind="room"></span></p>
-    <p>温度：<span id="temp"></span></p>
-    <div id="tempChart" class="epoch category20" style=" height: 150px"></div>
-    <p>照度：<span id="ill"></span></p>
-    <div id="illChart" class="epoch category20" style=" height: 150px"></div>
-  </form>
-</div>
+<h1>Room</h1>
 </body>
 </html>
