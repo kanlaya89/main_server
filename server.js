@@ -63,7 +63,7 @@ client.on('connect', function(ck) {
 
 // ------------------------------
 // mqtt: Subscribed Topics
-client.subscribe('room/#');
+client.subscribe('node/#');
 
 // ------------------------------
 // mqtt: Initial Publish
@@ -74,7 +74,12 @@ client.on('message', function(topic, payload) {
   var data;
   if(topic.indexOf('sensor/all') >- 1) {
     data = portobuf_schema.AllSensors.decode(payload);
-    io.emit('allSensors', data);
+    io.emit('room'+data.node, data);
+    console.log(topic, data);
+  };
+  if(topic.indexOf('ill') >- 1) {
+    data = portobuf_schema.SensorInt.decode(payload);
+    io.emit('sensor'+data.node, data);
     console.log(topic, data);
   };
 });
@@ -83,8 +88,12 @@ client.on('message', function(topic, payload) {
 // socket: on
 io.on('connection', function(socket){
   socket.on('room', function(number){
+    client.publish('server/node/'+number+'/sensor/all');
     console.log("clicked: "+ number);
-    client.publish('server/room/'+number+'/sensor/all');
+  });
+  socket.on('sensor', function(type){
+    client.publish('server/node/all/sensor/'+type);
+    console.log("clicked: "+ type);
   });
 });
 
@@ -93,10 +102,18 @@ io.on('connection', function(socket){
 app.get('/', function (req, res) {
    res.sendFile(__dirname + HtmlPath + "index.html" );
 });
-app.get('/room/:number', function (req, res) {
-  var number = req.param('number');
-  res.sendFile(__dirname + HtmlPath + "room.html?number=" + number);
-  console.log('room number', number);
+
+// app.get('/room/:number', function (req, res) {
+//   var number = req.param('number');
+//   res.redirect("../room.html?number=" + number);
+//   console.log('room number', number);
+// });
+
+app.get('/room.html', function(req, res){
+  res.sendFile(__dirname + HtmlPath + "room.html");
+});
+app.get('/sensor.html', function(req, res){
+  res.sendFile(__dirname + HtmlPath + "sensor.html");
 });
 
 // ------------------------------

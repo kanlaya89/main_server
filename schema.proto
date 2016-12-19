@@ -1,15 +1,17 @@
 syntax = "proto3";
 
-message type1 {
-	int64 id = 1;
-	sint32 temp = 2;
-	string name = 3;
-	repeated int32 no = 4 [packed=true];
-	repeated int32 no2 = 5 [packed=true];
-}
-
 message AllSensors {
 	float temp = 1;
 	int32 ill = 2;
-	string room = 3;
+	string node = 3;
+}
+
+message SensorFloat {
+	float sensor = 1;
+	string node = 2;
+}
+
+message SensorInt {
+	int32 sensor = 1;
+	string node = 2;
 }

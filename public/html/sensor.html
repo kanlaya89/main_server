@@ -12,19 +12,16 @@
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <script type='text/javascript' src="../js/epoch.min.js"></script>
   <link rel="stylesheet" type="text/css" href="../css/epoch.min.css">
-  <script src="../js/room.js"></script>
+  <script src="../js/sensor.js"></script>
   <link rel="stylesheet" href="../css/index.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
   
 </head>
-<body ng-app="ROOM">
+<body ng-app="SENSOR">
 <div ng-controller="myCtl1">
-  <h1>Room: <span ng-bind="number"></span></h1>
-  <p>温度：<span id="temp"></span></p>
-  <div id="tempChart" class="epoch category20" style=" height: 150px"></div>
-  <p>照度：<span id="ill"></span></p>
-  <div id="illChart" class="epoch category20" style=" height: 150px"></div>
+  <h1>Sensor: <span ng-bind="type"></span></h1>
+  <div id="sensorChart" class="epoch category20" style=" height: 200px"></div>
 </div>
 </body>
 </html>
