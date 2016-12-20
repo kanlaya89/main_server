@@ -17,17 +17,14 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 </head>
 
-<body ng-app="SENSOR">
+<body ng-app="INDEX">
 <h1>Sensor Visualization</h1>
 <div id="content">
   <form name="myForm" ng-controller="myCtl1" id="form">
-    <button button ng-repeat="number in rooms"><a ng-href="/room/{{number}}">{{number}}</a></button>
-    
-    <p>Room <span ng-bind="room"></span></p>
-    <p>温度：<span id="temp"></span></p>
-    <div id="tempChart" class="epoch category20" style=" height: 150px"></div>
-    <p>照度：<span id="ill"></span></p>
-    <div id="illChart" class="epoch category20" style=" height: 150px"></div>
+  	<p>ROOM</p>
+    <button button ng-repeat="room in rooms"><a ng-href="/room.html?number={{room}}">{{room}}</a></button>
+    <p>SENSOR</p>
+    <button button ng-repeat="sensor in sensors"><a ng-href="/sensor.html?type={{sensor}}">{{sensor}}</a></button>
   </form>
 </div>
 </body>
