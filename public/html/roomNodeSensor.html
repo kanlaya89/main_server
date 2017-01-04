@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+    <title>Sensor Visualization</title>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script type='text/javascript' src="../js/epoch.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/epoch.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <script type='text/javascript' src="../js/canvasjs.min.js"></script>
+    <script src="../js/plotly-latest.min.js"></script>
+    <script src="../js/mqttws31.js"></script>
+    <script type="text/javascript" src="../js/protobuf.js"></script>
+    <script src="../js/roomNodeSensor.js"></script>
+    <link rel="stylesheet" href="../css/roomNodeSensor.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+
+</head>
+
+<body ng-app="RoomNodeSensor">
+    <div ng-controller="myCtl1">
+        <h1>
+            <span>Room: </span><span ng-bind="roomNumber"></span>
+            <span> Node: </span><span ng-bind="nodeName"></span>
+        </h1>
+        <p><span ng-bind="sensorType"></span>: <span id="sensorValue"></span></p>
+        <div id="chart" class="epoch category20" style="height: 150px"></div>
+        <!--<div id="tester" style="height: 300px; width: 100%;"></div>-->
+        <div id="canvasChart" style="height: 300px; width: 100%;"></div>
+    </div>
+</body>
+
+</html>

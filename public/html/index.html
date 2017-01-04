@@ -1,32 +1,48 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-  <title>Sensor Visualization</title>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
-  <script type='text/javascript' src="../js/epoch.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="../css/epoch.min.css">
-  <script src="../js/index.js"></script>
-  <link rel="stylesheet" href="../css/index.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <title>Sensor Visualization</title>
+    <!-- JS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="../js/mqttws31.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script type='text/javascript' src="../js/epoch.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/epoch.min.css">
+    <script type="text/javascript" src="../js/protobuf.js"></script>
+    <script type="text/javascript" src="../js/index.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 </head>
 
 <body ng-app="INDEX">
-<h1>Sensor Visualization</h1>
-<div id="content">
-  <form name="myForm" ng-controller="myCtl1" id="form">
-  	<p>ROOM</p>
-    <button button ng-repeat="room in rooms"><a ng-href="/room.html?number={{room}}">{{room}}</a></button>
-    <p>SENSOR</p>
-    <button button ng-repeat="sensor in sensors"><a ng-href="/sensor.html?type={{sensor}}">{{sensor}}</a></button>
-  </form>
-</div>
-</body>
-</html>
 
+    <h1>Sensor Visualization</h1>
+    <div id="content" ng-controller="myCtl1">
+
+        <p>Select Topic:</p>
+        <span>Room:</span>
+        <select ng-model="selectedRoomNumber" ng-options="x for (x,y) in rooms"></select>
+        <span>Node:</span>
+        <select ng-model="selectedSensorNode" ng-options="x for (x,y) in nodes" ng-disabled="selectedRoomNumber == '#'"></select>
+        <span>Sensor:</span>
+        <select ng-model="selectedSensorType" ng-options="x for (x,y) in sensors" ng-disabled="(selectedRoomNumber == '#')||(selectedSensorNode == '#')"></select>
+        <p></p>
+        <span>Topic: </span>
+        <span ng-bind="topic()"></span>
+        <a href="/roomNodeSensor.html?number={{selectedRoomNumber}}&name={{selectedSensorNode}}&type={{selectedSensorType}}">
+            <button id="send_btt">Subscribe</button>
+        </a>
+        <!--<button id="send_btt" ng-click="send()">Subscribe</button>-->
+
+    </div>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-var express = require('express'); 
+var express = require('express');
 var router = express.Router();
 var app = express();
 var http = require('http').Server(app);
@@ -13,38 +13,24 @@ var fs = require('fs');
 var os = require('os');
 const dns = require('dns');
 
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname));
 
 // -----------------------------------
 //  Read from config.js
-var BrokerIP = require("./config").BrokerIP
-var BrokerPort = require("./config").BrokerPort;
+var Broker = require("./config").Broker;
 var ListenPort = require("./config").ListenPort;
 
-var HtmlPath = ("/public/html/");
 var portobuf_schema = protobuf(fs.readFileSync('schema.proto'));
 var mogoHost = require("./mongoModel").host;
 
 "use strict";
 // -----------------------------------
 //  TESTING
-// parameter middleware that will run before the next routes
 
 
-// -----------------------------------
-// setting: Broker
-var settings = {
-  port: BrokerPort,
-  persistence: mosca.persistence.Memory
-};
-
-// -----------------------------------
-//  run: Broker
-var Broker =  new mosca.Server(settings, function(){
-  console.log("Mosca is running");
-});
 
 // ------------------------------
 // connect: MongoDB, Broker, Socket
@@ -52,74 +38,93 @@ var Broker =  new mosca.Server(settings, function(){
 mongoose.connect('mongodb://localhost/thesis');
 db.on('error', console.error.bind(console, 'MongoDB connecting error'));
 db.once('open', function() {
-	console.log('MongoDB is connected');
+    console.log('MongoDB is connected');
 });
 // broker
-client = mqtt.connect('mqtt://' + BrokerIP + ':' + BrokerPort);
-// client = mqtt.connect('mqtt://' + BrokerIP);
+client = mqtt.connect('ws://' + Broker.ip + ":" + Broker.port);
+
 client.on('connect', function(ck) {
-	console.log('Connected to Broker')
-});
-
-// ------------------------------
-// mqtt: Subscribed Topics
-client.subscribe('node/#');
-
-// ------------------------------
-// mqtt: Initial Publish
-
-// ------------------------------
-// mqtt: On topic
-client.on('message', function(topic, payload) {
-  var data;
-  if(topic.indexOf('sensor/all') >- 1) {
-    data = portobuf_schema.AllSensors.decode(payload);
-    io.emit('room'+data.node, data);
-    console.log(topic, data);
-  };
-  if(topic.indexOf('ill') >- 1) {
-    data = portobuf_schema.SensorInt.decode(payload);
-    io.emit('sensor'+data.node, data);
-    console.log(topic, data);
-  };
+    console.log('Connected to Broker')
 });
 
 // ------------------------------
 // socket: on
-io.on('connection', function(socket){
-  socket.on('room', function(number){
-    client.publish('server/node/'+number+'/sensor/all');
-    console.log("clicked: "+ number);
-  });
-  socket.on('sensor', function(type){
-    client.publish('server/node/all/sensor/'+type);
-    console.log("clicked: "+ type);
-  });
+io.on('connection', function(socket) {
+    console.log("WebSocket on");
+});
+
+// ------------------------------
+// mqtt: Subscribed Topics
+var subscribedTopics = ["#"];
+for (var i = 0; i < subscribedTopics.length; i++) {
+    client.subscribe(subscribedTopics[i]);
+}
+
+// ------------------------------
+// mqtt: Initial Publish
+var buff = new Buffer("sh")
+var buff2 = "kdjfo"
+    // setInterval(function() {
+    //     client.publish('test', buff)
+    // }, 1000)
+
+
+// ------------------------------
+// mqtt: On topic
+client.on('message', function(topic, payload) {
+    // var data = portobuf_schema.Sensor.decode(payload);
+    console.log(topic, payload)
 });
 
 // ------------------------------
 // html: API
-app.get('/', function (req, res) {
-   res.sendFile(__dirname + HtmlPath + "index.html" );
+var HtmlPath = ("/public/html/");
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + HtmlPath + "index.html");
 });
 
-// app.get('/room/:number', function (req, res) {
+// app.get('/topic/:number/:name/:type/', function (req, res) {
 //   var number = req.param('number');
-//   res.redirect("../room.html?number=" + number);
-//   console.log('room number', number);
+//   var name = req.param('name');
+//   var type = req.param('type');
+//   // if ( (name != null) && (type != null) ) {
+//     // res.location("/roomNodeSensor.html?number="+number+"&name="+name+"&type="+type);
+//   // }
+//   // console.log('number:'+number, 'name:'+name, 'type:'+type);
 // });
 
-app.get('/room.html', function(req, res){
-  res.sendFile(__dirname + HtmlPath + "room.html");
+app.get('/room.html', function(req, res) {
+    res.sendFile(__dirname + HtmlPath + "room.html");
 });
-app.get('/sensor.html', function(req, res){
-  res.sendFile(__dirname + HtmlPath + "sensor.html");
+app.get('/roomNodeSensor.html', function(req, res) {
+    res.sendFile(__dirname + HtmlPath + "roomNodeSensor.html");
 });
+app.get('/protobuf.js', function(req, res) {
+    res.sendFile(__dirname + "/public/html/protobuf.js");
+});
+
+
+// app.get('/schema.proto', function(req, res){
+//   res.sendFile(__dirname + "/schema.proto");
+// });
+
+var request = require('request');
+var parser = require('node-feedparser');
+var feed = 'http://stackoverflow.com/feeds/question/10943544';
+
+
+request(feed, function(err, res, body) {
+    //console.log(body)
+    parser(body, function(err, ret) {
+        if (err) { return console.log(err) }
+        var title = ret.site.title;
+        console.log(title)
+    });
+});
+
 
 // ------------------------------
 // listening: on port 3000
-http.listen(ListenPort, function () {
-  console.log('Listening on port: ' + ListenPort);
+http.listen(ListenPort, function() {
+    console.log('Listening on port: ' + ListenPort);
 });
-
-

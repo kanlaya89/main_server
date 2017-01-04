@@ -1,11 +1,13 @@
 module.exports = {
-	// Numaoken
-	// BrokerIP: "130.153.120.99",
-	// BrokerPort: "5883",
-
-	// my mosca
-	BrokerIP: "kanlayaMac.local",
-	BrokerPort: "5883",
-	
+	// my ubuntu
+	Broker: {
+		ip: "10.10.1.44",
+		port :8080 
+	},
+	// numaoken
+	// Broker: {
+	// 	ip: "192.168.11.148",
+	// 	port :8080 
+	// },
 	ListenPort: "3000"
 }
