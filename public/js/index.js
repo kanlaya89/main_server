@@ -7,9 +7,31 @@ var imported = document.createElement('script');
 // ------------------------------
 // AngularJS
 app.controller('myCtl1', function($scope, $location, $http) {
+    $scope.selectedRoomNumber = "";
+    $scope.selectedSensorNode = "";
+    $scope.selectedSensorType = "";
+    // in database
     var rooms = [],
         nodes = [],
-        sensors = []
+        sensors = [],
+
+        // base data when selected wildcard
+        baseNodes = {},
+        baseSensors = {}
+
+    baseNodeList = ['A', 'B']
+    baseSensorsList = ['temp', 'ill', 'heart_w', 'breath_w', 'motion_w', 'heart', 'breath', 'motion']
+
+    // set key-value object
+    var setObj = function(setObj, arrays) {
+        for (var i in arrays) {
+            setObj[arrays[i]] = arrays[i]
+        }
+    }
+
+    setObj(baseNodes, baseNodeList)
+    setObj(baseSensors, baseSensorsList)
+
 
     // HTTP function
     var http = function(method, url, callback) {
@@ -40,15 +62,21 @@ app.controller('myCtl1', function($scope, $location, $http) {
         setRooms(rooms)
 
         // set nodes in room
-        $scope.changedRoom = function(room) {
-            setNodes(room)
+        $scope.changedRoom = function(room, node) {
+            $scope.selectedSensorType = "";
+            $scope.selectedSensorNode = "";
+            if (node === "") {
+                setNodes(room)
+            } else {
+                setSensors(room, node)
+            }
         }
 
         //set sensor object in room & node
         $scope.changedNode = function(room, node) {
+            $scope.selectedSensorType = "";
             setSensors(room, node)
         }
-
     })
 
     var setRooms = function(data) {
@@ -56,55 +84,44 @@ app.controller('myCtl1', function($scope, $location, $http) {
         for (var i in data) {
             $scope.rooms[data[i]] = data[i]
         }
-        $scope.rooms['全部屋'] = '+'
+        $scope.rooms['特定なし'] = '+'
         $scope.rooms['全ての部屋・ノード・センサ'] = '#'
     }
 
     var setNodes = function(room) {
         $scope.nodes = {}
-        for (var i in nodes) {
-            if (nodes[i].path === room) {
-                $scope.nodes[nodes[i].name] = nodes[i].name
+        if (room === '+') {
+            $scope.nodes = baseNodes
+        } else {
+            for (var i in nodes) {
+                if (nodes[i].path === room) {
+                    $scope.nodes[nodes[i].name] = nodes[i].name
+                }
             }
         }
-        $scope.nodes["全ノード"] = "+"
+        $scope.nodes["特定なし"] = "+"
         $scope.nodes["全てのノード・センサ"] = "#"
     }
 
     var setSensors = function(room, node) {
         $scope.sensors = {}
         var sensorList = []
-
-        for (var i in sensors) {
-
-            if (sensors[i].path === room + '/' + node) {
-                sensorList = sensors[i].type
-                for (var j in sensorList) {
-                    $scope.sensors[sensorList[j]] = sensorList[j]
+        if (node === '+' || room === '+') {
+            $scope.sensors = baseSensors
+        } else {
+            for (var i in sensors) {
+                if (sensors[i].path === room + '/' + node) {
+                    sensorList = sensors[i].type
+                    break
                 }
-                console.log('scope:', $scope.sensors)
-                break
-
             }
         }
-
+        setObj($scope.sensors, sensorList)
         $scope.sensors['全センサ'] = '#'
     }
 
     var topicName = "";
-    $scope.selectedRoomNumber = "";
-    $scope.selectedSensorNode = "";
-    $scope.selectedSensorType = "";
 
-    $scope.sensors = {
-        "温度": "temp",
-        "照度": "ill",
-        "心拍波形": "heart_w",
-        "呼吸波形": "breath_w",
-        "体動波形": "motion_w",
-        "心拍数": "heart",
-        "全てのセンサ": "+"
-    }
     $scope.topic = function() {
         if ($scope.selectedRoomNumber === '#') {
             disabledSensorNode = true;

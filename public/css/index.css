@@ -1,5 +1,9 @@
 #send_btt {
-	margin-left: 100px;
-	left: 70px;
-	position: fixed;
+    margin-left: 100px;
+    left: 70px;
+    position: fixed;
+}
+
+#selectMenu select {
+    width: 120px
 }
