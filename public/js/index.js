@@ -7,15 +7,11 @@ var imported = document.createElement('script');
 // ------------------------------
 // AngularJS
 app.controller('myCtl1', function($scope, $location, $http) {
-
     var rooms = [],
         nodes = [],
-        sensors = [],
+        sensors = []
 
-        roomList = {},
-        nodeList = {},
-        sensorList = {}
-
+    // HTTP function
     var http = function(method, url, callback) {
         options = {
             method: method,
@@ -30,46 +26,69 @@ app.controller('myCtl1', function($scope, $location, $http) {
             }
     }
 
+    // get all topics' infos data
     http('GET', 'http://localhost:3000/find/all/', function(err, callback) {
         if (err) { console.log(err) }
         var data = callback
         rooms = data.rooms
         nodes = data.nodes
         sensors = data.sensors
-        console.log(data.sensors)
+
+        console.log(sensors)
+
+        // set rooms
+        setRooms(rooms)
+
+        // set nodes in room
+        $scope.changedRoom = function(room) {
+            setNodes(room)
+        }
+
+        //set sensor object in room & node
+        $scope.changedNode = function(room, node) {
+            setSensors(room, node)
+        }
+
     })
 
-
-
-
-
-    var selectNodes = {}
-        // find all rooms' number
-
-
-
-    var nodeInRoom = function(room) {
-        for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i].path === room) {
-                // selectNodes.push(nodes[i].name)
-                selectNodes[nodes[i].name] = nodes[i].name
-            }
+    var setRooms = function(data) {
+        $scope.rooms = {}
+        for (var i in data) {
+            $scope.rooms[data[i]] = data[i]
         }
-        selectNodes["全ノード"] = "+"
-        selectNodes["全てのノード・センサ"] = "#"
-        $scope.nodes = selectNodes
-
-        console.log(selectNodes)
+        $scope.rooms['全部屋'] = '+'
+        $scope.rooms['全ての部屋・ノード・センサ'] = '#'
     }
 
-    // var sensorInRoomNode = function(node, room) {
-    //     for (var i in nodes)
+    var setNodes = function(room) {
+        $scope.nodes = {}
+        for (var i in nodes) {
+            if (nodes[i].path === room) {
+                $scope.nodes[nodes[i].name] = nodes[i].name
+            }
+        }
+        $scope.nodes["全ノード"] = "+"
+        $scope.nodes["全てのノード・センサ"] = "#"
+    }
 
+    var setSensors = function(room, node) {
+        $scope.sensors = {}
+        var sensorList = []
 
-    $scope.changedRoom = function(item) {
-        selectNodes = []
-        console.log(item)
-        nodeInRoom(item)
+        for (var i in sensors) {
+
+            if (sensors[i].path === room + '/' + node) {
+                sensorList = sensors[i].type
+                for (var j in sensorList) {
+                    $scope.sensors[sensorList[j]] = sensorList[j]
+                }
+                console.log('scope:', $scope.sensors)
+                break
+
+            }
+        }
+
+        $scope.sensors['全センサ'] = '#'
     }
 
     var topicName = "";
@@ -98,18 +117,5 @@ app.controller('myCtl1', function($scope, $location, $http) {
             }
         }
         return topicName;
-    }
-    $scope.send = function() {
-        var number = $scope.selectedRoomNumber,
-            name = $scope.selectedSensorNode,
-            type = $scope.selectedSensorType;
-        var response = $http.get('http://localhost:3000/topic/' + topicName);
-        response.success(function(data, status, headers, config) {
-            alert("Ok.");
-        });
-        response.error(function(data, status, headers, config) {
-            alert("Error.");
-        });
-        console.log('number:' + number, 'name:' + name, 'type:' + type);
     }
 });

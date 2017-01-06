@@ -31,7 +31,7 @@
         <span>Room:</span>
         <select ng-model="selectedRoomNumber" ng-options="x for (x,y) in rooms" ng-change="changedRoom(selectedRoomNumber)"></select>
         <span>Node:</span>
-        <select ng-model="selectedSensorNode" ng-options="x for (x,y) in nodes" ng-change="changedNode(selectSensorNode)" ng-disabled="selectedRoomNumber == '#'"></select>
+        <select ng-model="selectedSensorNode" ng-options="x for (x,y) in nodes" ng-change="changedNode(selectedRoomNumber, selectedSensorNode)" ng-disabled="selectedRoomNumber == '#'"></select>
         <span>Sensor:</span>
         <select ng-model="selectedSensorType" ng-options="x for (x,y) in sensors" ng-disabled="(selectedRoomNumber == '#')||(selectedSensorNode == '#')"></select>
         <p></p>
