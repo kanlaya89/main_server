@@ -1,7 +1,7 @@
 module.exports = {
     // my ubuntu
     Broker: {
-        ip: "10.10.1.44",
+        ip: "10.10.18.20",
         port: 8080
     },
     // numaoken

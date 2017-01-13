@@ -1,4 +1,4 @@
-var app = angular.module('INDEX', []);
+var app = angular.module('myApp', ['ngRoute']);
 // var socket = io.connect();
 var imported = document.createElement('script');
 
@@ -6,7 +6,19 @@ var imported = document.createElement('script');
 
 // ------------------------------
 // AngularJS
+app.config(function($routeProvider) {
+    $routeProvider
+        .when("/roomNodeSensor/:room/:node/:sensor", {
+            templateUrl: "roomNodeSensor.html",
+            controller: 'roomNodeSensor'
+        })
+        .when("/roomNode/:room/:node/", {
+            templateUrl: "roomNode.html",
+            controller: 'roomNode'
+        })
+})
 app.controller('myCtl1', function($scope, $location, $http) {
+
     $scope.selectedRoomNumber = "";
     $scope.selectedSensorNode = "";
     $scope.selectedSensorType = "";
@@ -134,5 +146,13 @@ app.controller('myCtl1', function($scope, $location, $http) {
             }
         }
         return topicName;
+    }
+
+    $scope.subscribe = function() {
+        if ($scope.selectedSensorType === '#') {
+            $location.path('/roomNode/' + $scope.selectedRoomNumber + '/' + $scope.selectedSensorNode)
+        } else {
+            $location.path('/roomNodeSensor/' + $scope.selectedRoomNumber + '/' + $scope.selectedSensorNode + '/' + $scope.selectedSensorType)
+        }
     }
 });

@@ -5,28 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
     <title>Sensor Visualization</title>
-    <!-- JS -->
+
+    <!-- JS: CDN -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-    <script src="../js/mqttws31.js"></script>
-    <!--<script src="../js/socket.io/socket.io.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <!-- JS: local -->
+    <script type="text/javascript" src="../js/mqttws31.js"></script>
     <script type='text/javascript' src="../js/epoch.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/epoch.min.css">
     <script type="text/javascript" src="../js/protobuf.js"></script>
+    <script type='text/javascript' src="../js/plotly-latest.min.js"></script>
+    <script type='text/javascript' src="../js/mqttws31.js"></script>
+    <script type='text/javascript' src="../js/canvasjs.min.js"></script>
+
+    <script type="text/javascript" src="../js/function.js"></script>
     <script type="text/javascript" src="../js/index.js"></script>
-    <!-- CSS -->
-    <link rel="stylesheet" href="../css/index.css">
+    <script type="text/javascript" src="../js/roomNodeSensor.js"></script>
+    <script type="text/javascript" src="../js/roomNode.js"></script>
+
+    <!-- CSS: cdn -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <!-- CSS: -->
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" type="text/css" href="../css/epoch.min.css">
+
 </head>
 
-<body ng-app="INDEX">
-
+<body ng-app="myApp">
     <h1>Sensor Visualization</h1>
     <div id="content" ng-controller="myCtl1">
-
         <p>Select Topic:</p>
         <div id="selectMenu">
             <span>Room:</span>
@@ -35,15 +47,16 @@
             <select ng-model="selectedSensorNode" ng-options="x for (x,y) in nodes" ng-change="changedNode(selectedRoomNumber, selectedSensorNode)" ng-disabled="selectedRoomNumber == '#'"></select>
             <span>Sensor:</span>
             <select ng-model="selectedSensorType" ng-options="x for (x,y) in sensors" ng-disabled="(selectedRoomNumber == '#')||(selectedSensorNode == '#')"></select>
-
         </div>
         <p></p>
         <span>Topic: </span>
         <span ng-bind="topic()"></span>
-        <a href="/roomNodeSensor.html?number={{selectedRoomNumber}}&name={{selectedSensorNode}}&type={{selectedSensorType}}">
-            <button id="send_btt">Subscribe</button>
-        </a>
-
+        <!--<a href="http://localhost:3000/roomNodeSensor.html?room={{selectedRoomNumber}}&node={{selectedSensorNode}}&sensor={{selectedSensorType}}">-->
+        <!--<button>Subscribe</button>-->
+        <!--</a>-->
+        <button id="send_btt" ng-click="subscribe()">Subscribe</button>
+    </div>
+    <div ng-view>
     </div>
 </body>
 

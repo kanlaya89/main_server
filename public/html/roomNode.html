@@ -1,0 +1,8 @@
+<h1>
+    <span>Room: </span><span ng-bind="roomNumber"></span>
+    <span> Node: </span><span ng-bind="nodeName"></span>
+</h1>
+<div ng-repeat="sensor in sensors">
+    <p ng-bind="convertSensorName(sensor)"></p>
+    <div id="canvasChart" style="height: 300px; width: 100%;"></div>
+</div>
