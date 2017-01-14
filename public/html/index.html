@@ -42,11 +42,17 @@
         <p>Select Topic:</p>
         <div id="selectMenu">
             <span>Room:</span>
-            <select ng-model="selectedRoomNumber" ng-options="x for (x,y) in rooms" ng-change="changedRoom(selectedRoomNumber, selectedSensorNode)"></select>
+            <select ng-model="selectedRoomNumber" ng-change="changedRoom(selectedRoomNumber, selectedSensorNode)">
+                <option ng-repeat="room in rooms track by $index" value="{{room}}">{{room}}</option>
+            </select>
             <span>Node:</span>
-            <select ng-model="selectedSensorNode" ng-options="x for (x,y) in nodes" ng-change="changedNode(selectedRoomNumber, selectedSensorNode)" ng-disabled="selectedRoomNumber == '#'"></select>
+            <select ng-model="selectedSensorNode" ng-change="changedNode(selectedRoomNumber, selectedSensorNode)" ng-disabled="selectedRoomNumber == '#'">
+                <option ng-repeat="node in nodes track by $index" value="{{node}}">{{node}}</option>
+            </select>
             <span>Sensor:</span>
-            <select ng-model="selectedSensorType" ng-options="x for (x,y) in sensors" ng-disabled="(selectedRoomNumber == '#')||(selectedSensorNode == '#')"></select>
+            <select ng-model="selectedSensorType" ng-disabled="(selectedRoomNumber == '#')||(selectedSensorNode == '#')">
+                <option ng-repeat="sensor in sensors track by $index" value="{{sensor}}">{{sensor}}</option>
+            </select>
         </div>
         <p></p>
         <span>Topic: </span>

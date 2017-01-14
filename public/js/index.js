@@ -19,31 +19,15 @@ app.config(function($routeProvider) {
 })
 app.controller('myCtl1', function($scope, $location, $http) {
 
-    $scope.selectedRoomNumber = "";
+    $scope.selectedRoomNumber = "#";
     $scope.selectedSensorNode = "";
     $scope.selectedSensorType = "";
+
     // in database
     var rooms = [],
         nodes = [],
         sensors = [],
-
-        // base data when selected wildcard
-        baseNodes = {},
-        baseSensors = {}
-
-    baseNodeList = ['A', 'B']
-    baseSensorsList = ['temp', 'ill', 'heart_w', 'breath_w', 'motion_w', 'heart', 'breath', 'motion']
-
-    // set key-value object
-    var setObj = function(setObj, arrays) {
-        for (var i in arrays) {
-            setObj[arrays[i]] = arrays[i]
-        }
-    }
-
-    setObj(baseNodes, baseNodeList)
-    setObj(baseSensors, baseSensorsList)
-
+        topics = []
 
     // HTTP function
     var http = function(method, url, callback) {
@@ -61,14 +45,11 @@ app.controller('myCtl1', function($scope, $location, $http) {
     }
 
     // get all topics' infos data
-    http('GET', 'http://localhost:3000/find/all/', function(err, callback) {
+    http('GET', 'http://localhost:3000/find/topics/', function(err, callback) {
         if (err) { console.log(err) }
         var data = callback
+        topics = data.topics
         rooms = data.rooms
-        nodes = data.nodes
-        sensors = data.sensors
-
-        console.log(sensors)
 
         // set rooms
         setRooms(rooms)
@@ -77,11 +58,12 @@ app.controller('myCtl1', function($scope, $location, $http) {
         $scope.changedRoom = function(room, node) {
             $scope.selectedSensorType = "";
             $scope.selectedSensorNode = "";
-            if (node === "") {
-                setNodes(room)
-            } else {
-                setSensors(room, node)
-            }
+            // if (node === "") {
+            //     setNodes(room)
+            // } else {
+            //     setSensors(room, node)
+            // }
+            setNodes(room)
         }
 
         //set sensor object in room & node
@@ -92,48 +74,44 @@ app.controller('myCtl1', function($scope, $location, $http) {
     })
 
     var setRooms = function(data) {
-        $scope.rooms = {}
-        for (var i in data) {
-            $scope.rooms[data[i]] = data[i]
-        }
-        $scope.rooms['特定なし'] = '+'
-        $scope.rooms['全ての部屋・ノード・センサ'] = '#'
+        $scope.rooms = rooms
+        $scope.rooms.push('+', '#')
     }
 
     var setNodes = function(room) {
-        $scope.nodes = {}
+        nodes = []
         if (room === '+') {
-            $scope.nodes = baseNodes
+
         } else {
-            for (var i in nodes) {
-                if (nodes[i].path === room) {
-                    $scope.nodes[nodes[i].name] = nodes[i].name
+            for (var i in topics) {
+                if (topics[i].room === room) {
+                    nodes.push(topics[i].node)
                 }
             }
         }
-        $scope.nodes["特定なし"] = "+"
-        $scope.nodes["全てのノード・センサ"] = "#"
+        $scope.nodes = nodes
+        $scope.nodes.push('+', '#')
     }
 
     var setSensors = function(room, node) {
-        $scope.sensors = {}
-        var sensorList = []
+        sensors = []
         if (node === '+' || room === '+') {
-            $scope.sensors = baseSensors
+
         } else {
-            for (var i in sensors) {
-                if (sensors[i].path === room + '/' + node) {
-                    sensorList = sensors[i].type
+            for (var i in topics) {
+                if (topics[i].room === room && topics[i].node === node) {
+                    sensors = topics[i].sensors
                     break
                 }
             }
         }
-        setObj($scope.sensors, sensorList)
-        $scope.sensors['全センサ'] = '#'
+        $scope.sensors = sensors
+        $scope.sensors.push('#')
+
     }
 
+    // create real topic to subscribe
     var topicName = "";
-
     $scope.topic = function() {
         if ($scope.selectedRoomNumber === '#') {
             disabledSensorNode = true;
@@ -148,6 +126,7 @@ app.controller('myCtl1', function($scope, $location, $http) {
         return topicName;
     }
 
+    // subscribe button to route html api
     $scope.subscribe = function() {
         if ($scope.selectedSensorType === '#') {
             $location.path('/roomNode/' + $scope.selectedRoomNumber + '/' + $scope.selectedSensorNode)
