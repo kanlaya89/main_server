@@ -13,7 +13,6 @@ var schema = protobuf(fs.readFileSync('schema.proto'));
 // ------------------------------
 // mqtt: connect
 client = mqtt.connect('ws://' + Broker.ip + ':' + Broker.port);
-
 client.on('connect', function(ck) {
     console.log('Connected to Broker')
 });
@@ -26,24 +25,34 @@ for (var i in subscribedTopics) {
 }
 
 // ------------------------------
+// mqtt: Publish Topics
+client.publish('get_ping');
+
+// ------------------------------
 // mqtt: On topic
-// client.on('message', function(topic, payload) {
-//     if (topic === 'ping') {
-//         decodeData = schema.Topic.decode(payload)
-//     }
-//     console.log(topic, decodeData)
-// });
+client.on('message', function(topic, payload) {
+    if (topic === 'ping') {
+        console.time('ping')
+        var data = schema.Topic.decode(payload)
+        var findData = {
+            room: data.room,
+            node: data.node
+        }
+        var updateData = {
+            sensors: data.sensors
+        }
+        console.log(topic, data)
+        var mycol = db.collection('topics')
+        mycol.findOneAndUpdate(findData, { $set: updateData }, { upsert: true }, function(err, cb) {
+            if (err) { return console.log('Error:', err) }
+            console.log('Updated:', findData)
+        })
+        console.timeEnd('ping')
 
+    } else {
+        console.log(topic, payload)
+    }
 
-var test = {
-    room: '1',
-    node: 'a',
-    sensors: ['temp', 'ill']
-}
-
-var encode_buf = schema.Topic.encode(test)
-console.log('encode', encode_buf)
-var decode_buf = schema.Topic.decode(encode_buf)
-console.log('decode', decode_buf)
+});
 
 module.exports = client
