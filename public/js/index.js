@@ -90,6 +90,7 @@ app.controller('myCtl1', function($scope, $location, $http) {
 
     var setSensors = function(room, node) {
         sensors = []
+        $scope.sensors = sensors
         if (node === '+' || room === '+') {
 
         } else {
@@ -100,14 +101,14 @@ app.controller('myCtl1', function($scope, $location, $http) {
                 }
             }
         }
-        // for (var i in sensors) {
-        //     if (sensors[i] === 'micro_w') {
-        //         $scope.sensors.push('heart_w', 'breath_w', 'motion_w')
-        //     } else {
-        //         $scope.sensors.push(sensors[i])
-        //     }
-        // }
-        $scope.sensors = sensors
+        for (var i in sensors) {
+            if (sensors[i] === 'micro_w') {
+                $scope.sensors.push('heartW', 'breathW', 'motionW')
+            } else {
+                $scope.sensors.push(sensors[i])
+            }
+        }
+
         $scope.sensors.push('#')
     }
 

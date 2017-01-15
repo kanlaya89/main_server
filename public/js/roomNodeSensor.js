@@ -32,7 +32,11 @@ app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $loc
         console.log("Connected mqtt");
 
         // mqtt: Subscribed Topics
-        client.subscribe(room + '/' + node + '/' + sensor);
+        if (sensor == 'heartW' || sensor == 'breathW' || sensor == 'motionW') {
+            client.subscribe(room + '/' + node + '/micro_w');
+        } else {
+            client.subscribe(room + '/' + node + '/' + sensor);
+        }
     }
 
     // called when the client loses its connection
@@ -44,18 +48,20 @@ app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $loc
 
     // called when a message arrives
     function onMessageArrived(message) {
-        if (sensor === 'micro_w') {
+        // if (sensor === 'micro_w') {
 
+        // } else {
+        var decodeData = sensorTypeObject[sensor].decode(message.payloadBytes)
+        console.log('decodeData:', decodeData)
+        sensorValue = parseInt(decodeData[sensor])
+        console.log('sensorValue:', sensorValue)
+        if (sensor === 'heart') {
+            $('#sensorValue').text(sensorValue + '  確度：' + decodeData.accuracy);
+            console.log('heart:', sensorValue, 'accuracy:', decodeData.accuracy)
         } else {
-            var decodeData = sensorTypeObject[sensor].decode(message.payloadBytes)
-            sensorValue = parseInt(decodeData[sensor])
-            if (sensor === 'heart') {
-                $('#sensorValue').text(sensorValue + '  確度：' + decodeData.accuracy);
-                console.log('heart:', sensorValue, 'accuracy:', decodeData.accuracy)
-            } else {
-                $('#sensorValue').text(sensorValue);
-            }
+            $('#sensorValue').text(sensorValue);
         }
+        // }
     }
     //--------------------
     // casvas chart
