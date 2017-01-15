@@ -58,11 +58,6 @@ app.controller('myCtl1', function($scope, $location, $http) {
         $scope.changedRoom = function(room, node) {
             $scope.selectedSensorType = "";
             $scope.selectedSensorNode = "";
-            // if (node === "") {
-            //     setNodes(room)
-            // } else {
-            //     setSensors(room, node)
-            // }
             setNodes(room)
         }
 
@@ -105,9 +100,15 @@ app.controller('myCtl1', function($scope, $location, $http) {
                 }
             }
         }
+        // for (var i in sensors) {
+        //     if (sensors[i] === 'micro_w') {
+        //         $scope.sensors.push('heart_w', 'breath_w', 'motion_w')
+        //     } else {
+        //         $scope.sensors.push(sensors[i])
+        //     }
+        // }
         $scope.sensors = sensors
         $scope.sensors.push('#')
-
     }
 
     // create real topic to subscribe
