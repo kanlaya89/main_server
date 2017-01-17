@@ -29,6 +29,10 @@ message Ill {
     uint32 ill = 1;
 }
 
+message CommonInt {
+    uint32 commonInt = 1;
+}
+
 message MicroWave {
     sint32 heart_w = 1;
     sint32 breath_w = 2;

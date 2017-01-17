@@ -1,6 +1,6 @@
 // "use strict";
-var client = new Paho.MQTT.Client("10.10.18.20", 8080, 'id:' + parseInt(Math.random() * 100, 10));
-
+var client = new Paho.MQTT.Client("www2.nm.cs.uec.ac.jp", 9001, 'id:' + parseInt(Math.random() * 100, 10));
+// var client = new Paho.MQTT.Client("192.168.11.148", 8080, 'id:' + parseInt(Math.random() * 100, 10));
 var sensorValue
 
 // ------------------------------
@@ -83,7 +83,7 @@ app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $loc
         // starting at 9.30 am
         var updateInterval = sensorTypeObject[sensor].period
         console.log('updateInterval:', updateInterval)
-        var dataLength = 100 * 1000 / updateInterval; // number of dataPoints visible at any point
+        var dataLength = 50 * 1000 / updateInterval; // number of dataPoints visible at any point
 
         var updateChart = function(count) {
             // add interval duration to time				

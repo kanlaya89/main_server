@@ -52,22 +52,23 @@ var topicFunction = function(topic, payload) {
         'ping': function() {
             saveTopic(payload)
         },
-        '104/A/heart': function() {
-            var decodeData = schema.Heart.decode(payload)
-            console.log(topic, decodeData)
-        },
-        '104/A/micro_w': function() {
-            var decodeData = schema.MicroWave.decode(payload)
-            console.log(topic, decodeData)
-        },
+        // '104/A/heart': function() {
+        //     var decodeData = schema.Heart.decode(payload)
+        //     console.log(topic, decodeData)
+        // },
+        // '104/A/micro_w': function() {
+        //     var decodeData = schema.MicroWave.decode(payload)
+        //     console.log(topic, decodeData)
+        // },
         'default': function() {
-            console.log('Sub topic:', topic, 'payload:', payload.toString())
+            // console.log('Sub topic:', topic, 'payload:', payload)
+            console.log('sub topic', topic)
         }
     }
     return (topics[topic] || topics['default'])()
 }
 client.on('message', function(topic, payload) {
-    console.log('Subscribed topic:', topic)
+    // console.log('Subscribed topic:', topic)
     topicFunction(topic, payload)
 });
 
