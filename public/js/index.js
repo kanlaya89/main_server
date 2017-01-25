@@ -1,5 +1,5 @@
 var app = angular.module('myApp', ['ngRoute']);
-// var socket = io.connect();
+var socket = io.connect();
 var imported = document.createElement('script');
 
 "use strict";
@@ -8,6 +8,10 @@ var imported = document.createElement('script');
 // AngularJS
 app.config(function($routeProvider) {
     $routeProvider
+        .when("/broker", {
+            templateUrl: "broker.html",
+            controller: 'broker'
+        })
         .when("/roomNodeSensor/:room/:node/:sensor", {
             templateUrl: "roomNodeSensor.html",
             controller: 'roomNodeSensor'
@@ -135,5 +139,15 @@ app.controller('myCtl1', function($scope, $location, $http) {
         } else {
             $location.path('/roomNodeSensor/' + $scope.selectedRoomNumber + '/' + $scope.selectedSensorNode + '/' + $scope.selectedSensorType)
         }
+    }
+
+    // href broker page
+    $scope.toBroker = function() {
+        console.log('clicked broker')
+        $location.path('/broker')
+    };
+    // refresh topic data
+    $scope.refreshTopic = function() {
+
     }
 });

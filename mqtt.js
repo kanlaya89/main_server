@@ -13,16 +13,23 @@ var schema = protobuf(fs.readFileSync('schema.proto'));
 // ------------------------------
 // mqtt: connect
 client = mqtt.connect('ws://' + Broker.ip + ':' + Broker.port);
-client.on('connect', function(ck) {
+client.on('connect', function(callback) {
     console.log('Connected to Broker')
 });
 
 // ------------------------------
 // mqtt: Subscribed Topics
-var subscribedTopics = ["#"];
+var subscribedTopics = ['ping', 'test', 'get_ping'];
 for (var i in subscribedTopics) {
     client.subscribe(subscribedTopics[i]);
 }
+
+// var encoded_person = schema.Person.encode({
+//     name: 'kanlaya',
+//     id: 120
+// })
+// console.log('encoded_person:', encoded_person)
+// encoded_person: <Buffer 0a 07 6b 61 6e 6c 61 79 61 10 78>
 
 // ------------------------------
 // mqtt: Publish Topics
@@ -52,17 +59,9 @@ var topicFunction = function(topic, payload) {
         'ping': function() {
             saveTopic(payload)
         },
-        // '104/A/heart': function() {
-        //     var decodeData = schema.Heart.decode(payload)
-        //     console.log(topic, decodeData)
-        // },
-        // '104/A/micro_w': function() {
-        //     var decodeData = schema.MicroWave.decode(payload)
-        //     console.log(topic, decodeData)
-        // },
         'default': function() {
             // console.log('Sub topic:', topic, 'payload:', payload)
-            console.log('sub topic', topic)
+            console.log('Sub topic:', topic)
         }
     }
     return (topics[topic] || topics['default'])()

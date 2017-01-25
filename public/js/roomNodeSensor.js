@@ -1,7 +1,4 @@
-// "use strict";
-// var client = new Paho.MQTT.Client("192.168.11.148", 8080, 'id:' + parseInt(Math.random() * 100, 10));var routeCanged = false
 var currentTopic = ""
-
 
 // ------------------------------
 // AngularJS
@@ -14,29 +11,36 @@ app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $loc
     var room = $routeParams.room,
         node = $routeParams.node,
         sensor = $routeParams.sensor
-    
+
     // apply currentTopic as route when first open a page
-    currentTopic = room +"/"+node+"/"+sensor
+    currentTopic = room + "/" + node + "/" + sensor
 
     $scope.roomNumber = room;
     $scope.nodeName = node;
     $scope.sensorType = sensorTypeObject[sensor].name
 
     // when route has changed, should Update graph
-    $scope.$on('$routeChangeStart', function(next, current) { 
+    $scope.$on('$routeChangeStart', function(next, current) {
         // unsubscribe previous topic
-        var previousTopic = $routeParams.room +"/"+ $routeParams.node +"/"+ $routeParams.sensor
+        var previous_sensor = $routeParams.sensor
+        if (previous_sensor == 'heartW' || previous_sensor == 'motionW' || previous_sensor == 'breathW') {
+            var previousTopic = $routeParams.room + "/" + $routeParams.node + "/micro_w"
+        } else {
+            var previousTopic = $routeParams.room + "/" + $routeParams.node + "/" + previous_sensor;
+        }
         client.unsubscribe(previousTopic)
         console.log("unsubscribe ", previousTopic)
 
         // apply new Topic (route)
-        currentTopic = current.params.room +"/"+ current.params.node +"/"+ current.params.sensor
+        var current_sensor = current.params.sensor
+        if (current_sensor == 'heartW' || current_sensor == 'motionW' || current_sensor == 'breathW') {
+            currentTopic = current.params.room + "/" + current.params.node + "/micro_w"
+        } else {
+            currentTopic = current.params.room + "/" + current.params.node + "/" + current_sensor
+        }
+
         console.log("currentTopic: ", currentTopic)
     });
-
-    
-    
-
 
     // ------------------------------
     // MQTT
@@ -49,7 +53,6 @@ app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $loc
     if (isConnected === false) {
         client.connect({ onSuccess: onConnect });
     }
-    
 
     // called when the client connects
     function onConnect() {
@@ -77,66 +80,59 @@ app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $loc
     // called when a message arrives
     function onMessageArrived(message) {
         console.log("onMessageArrived: ", message.destinationName)
-
-        // push only current topic's data to the graph
-        if (message.destinationName === currentTopic) {
-            var decodeData = sensorTypeObject[sensor].decode(message.payloadBytes)
-            console.log('decodeData:', decodeData)
-            sensorValue = parseInt(decodeData[sensor])
-            console.log('sensorValue:', sensorValue)
-            if (sensor === 'heart') {
-                $('#sensorValue').text(sensorValue + '  確度：' + decodeData.accuracy);
-                console.log('heart:', sensorValue, 'accuracy:', decodeData.accuracy)
-            } else {
-                $('#sensorValue').text(sensorValue);
-            }
+        var decodeData = sensorTypeObject[sensor].decode(message.payloadBytes)
+            // console.log('decodeData:', decodeData)
+        sensorValue = parseInt(decodeData[sensor])
+            // console.log('sensorValue:', sensorValue)
+        if (sensor === 'heart') {
+            $('#sensorValue').text(sensorValue + '  確度：' + decodeData.accuracy);
+            console.log('heart:', sensorValue, 'accuracy:', decodeData.accuracy)
+        } else {
+            $('#sensorValue').text(sensorValue);
         }
-        
-        // }
     }
     //--------------------
     // casvas chart
-        var dps = []; // dataPoints
-        var time = new Date
-        var chart = new CanvasJS.Chart("canvasChart", {
-            title: {
-                text: $scope.sensorType
-            },
-            data: [{
-                type: "line",
-                xValueType: "dateTime",
-                dataPoints: dps
-            }]
-        });
+    var dps = []; // dataPoints
+    var time = new Date
+    var chart = new CanvasJS.Chart("canvasChart", {
+        title: {
+            text: $scope.sensorType
+        },
+        data: [{
+            type: "line",
+            xValueType: "dateTime",
+            dataPoints: dps
+        }]
+    });
 
-        // starting at 9.30 am
-        var updateInterval = sensorTypeObject[sensor].period
-        console.log('updateInterval:', updateInterval)
-        var dataLength = 50 * 1000 / updateInterval; // number of dataPoints visible at any point
+    var updateInterval = sensorTypeObject[sensor].period
+    console.log('updateInterval:', updateInterval)
+    var dataLength = 50 * 1000 / updateInterval; // number of dataPoints visible at any point
 
-        var updateChart = function(count) {
+    var updateChart = function(count) {
+        // add interval duration to time                
+        count = count || 1;
+        // count is number of times loop runs to generate random dataPoints
+        for (var j = 0; j < count; j++) {
             // add interval duration to time                
-            count = count || 1;
-            // count is number of times loop runs to generate random dataPoints
-            for (var j = 0; j < count; j++) {
-                // add interval duration to time                
-                time.setTime(time.getTime() + updateInterval);
-                dps.push({
-                    x: time.getTime(),
-                    y: sensorValue
-                });
-            };
-            if (dps.length > dataLength) {
-                dps.shift();
-            }
-            chart.render();
+            time.setTime(time.getTime() + updateInterval);
+            dps.push({
+                x: time.getTime(),
+                y: sensorValue
+            });
         };
+        if (dps.length > dataLength) {
+            dps.shift();
+        }
+        chart.render();
+    };
 
-        // generates first set of dataPoints
-        updateChart(dataLength);
+    // generates first set of dataPoints
+    updateChart(dataLength);
 
-        // update chart after specified time. 
-        setInterval(function() { updateChart() }, updateInterval);
-    
+    // update chart after specified time. 
+    setInterval(function() { updateChart() }, updateInterval);
+
 
 });

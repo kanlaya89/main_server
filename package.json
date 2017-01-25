@@ -20,7 +20,7 @@
     "devDependencies": {},
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "sudo node server1.js"
+        "start": "sudo node server.js"
     },
     "author": "kanlaya",
     "license": "ISC"

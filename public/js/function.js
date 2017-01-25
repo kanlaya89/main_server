@@ -69,14 +69,14 @@ var sensorTypeObject = {
         decode: function(buffer) {
             return TempMsg.decode(buffer)
         },
-        period: 1000
+        period: 500
     },
     'ill': {
         name: '照度',
         decode: function(buffer) {
             return IllMsg.decode(buffer)
         },
-        period: 1000
+        period: 500
     },
     'heart': {
         name: '心拍数',
