@@ -17,12 +17,20 @@ client.on('connect', function(callback) {
     console.log('Connected to Broker')
 });
 
+client.on('message', function(topic, payload) {
+    console.log(payload.toString())
+     console.log('Subscribed topic:', topic)
+    //topicFunction(topic, payload)
+});
+
 // ------------------------------
 // mqtt: Subscribed Topics
-var subscribedTopics = ['ping', 'test', 'get_ping'];
+var subscribedTopics = ['ping', 'test', 'get_ping',"kk"];
 for (var i in subscribedTopics) {
     client.subscribe(subscribedTopics[i]);
 }
+
+//client.publish("kk", "pihu")
 
 // var encoded_person = schema.Person.encode({
 //     name: 'kanlaya',
@@ -33,7 +41,9 @@ for (var i in subscribedTopics) {
 
 // ------------------------------
 // mqtt: Publish Topics
-client.publish('get_ping');
+
+
+
 
 // function: save topic into database
 var saveTopic = function(payload) {
@@ -66,9 +76,23 @@ var topicFunction = function(topic, payload) {
     }
     return (topics[topic] || topics['default'])()
 }
-client.on('message', function(topic, payload) {
-    // console.log('Subscribed topic:', topic)
-    topicFunction(topic, payload)
-});
 
-module.exports = client
+
+// client.publish("test")
+// client.publish('get_ping')
+
+
+var mqttClient = {
+
+    publish: function(topic, message){
+        //console.log("publish topic " + topic)
+        client.publish(topic, message)
+    },
+    subscribe: function(topic, message){
+        client.subscribe(topic, message)
+    }
+
+
+}
+module.exports.mqttClient = mqttClient
+//module.exports = client
