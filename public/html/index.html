@@ -13,8 +13,8 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <!--<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>-->
     <!-- JS: local -->
     <script type="text/javascript" src="../js/mqttws31.js"></script>
     <script type="text/javascript" src="../js/protobuf.js"></script>
@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../js/index.js"></script>
     <script type="text/javascript" src="../js/roomNodeSensor.js"></script>
     <script type="text/javascript" src="../js/roomNode.js"></script>
+    <script type="text/javascript" src="../js/brokerStatus.js"></script>
 
     <!-- CSS: cdn -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
@@ -38,9 +39,9 @@
 <body ng-app="myApp">
     <h1>Sensor Visualization</h1>
     <div id="content" ng-controller="myCtl1">
-        <button ng-click="toBroker()">Broker Status</button>
+        <!--<button ng-click="toBroker()">Broker Status</button>
         </br>
-        <button ng-click="refreshTopic()">Refresh Topic</button>
+        <button ng-click="refreshTopic()">Refresh Topic</button>-->
         <p>Select Topic:</p>
         <div id="selectMenu">
             <span>Room:</span>

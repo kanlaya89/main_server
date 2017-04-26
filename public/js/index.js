@@ -1,5 +1,5 @@
 var app = angular.module('myApp', ['ngRoute']);
-var socket = io.connect();
+// var socket = io.connect();
 var imported = document.createElement('script');
 
 "use strict";
@@ -19,6 +19,10 @@ app.config(function($routeProvider) {
         .when("/roomNode/:room/:node/", {
             templateUrl: "roomNode.html",
             controller: 'roomNode'
+        })
+        .when("/brokerStatus/:type/:min", {
+            templateUrl: 'brokerStatus.html',
+            controller: 'brokerStatus'
         })
 })
 app.controller('myCtl1', function($scope, $location, $http) {

@@ -1,29 +1,9 @@
 syntax = "proto3";
 
-message Person {
-    string name = 1;
-    int32    id = 2;
-}
-
-// with more details
-// message Topic {
-// 	string room = 1;
-// 	string node = 2;
-// 	message Sensors {
-// 		string type = 1;
-// 		message Detail {
-// 			uint32 period = 1;
-// 			int32 status = 2;
-// 		}
-// 		Detail detail = 2;
-// 	}
-// 	repeated Sensors sensors = 3;
-// }
-
 message Topic {
-	string room = 1;
-	string node = 2;
-	repeated string sensors = 3 [packed=true];
+    string room = 1;
+    string node = 2;
+    repeated string sensors = 3[packed = true];
 }
 
 message Temp {
@@ -46,5 +26,35 @@ message MicroWave {
 
 message Heart {
     uint32 heart = 1;
-    uint32 accuracy = 2; 
+    uint32 accuracy = 2;
 }
+
+message Test {
+    uint32 test = 1;
+}
+
+
+// message Topic {
+// 	string roomNumber = 1;
+// 	string nodeId = 2;
+// 	repeated string sensorTypes = 3 [packed=true];
+// }
+
+// message Temp {
+//   float temp = 1;
+// }
+
+// message Ill {
+//   uint32 ill = 1;
+// }
+
+// message MicroWave {
+//     sint32 heartW = 1;
+//     sint32 breathW = 2;
+//     sint32 motionW = 3;
+// }
+
+// message Heart {
+//     uint32 heart = 1;
+//     uint32 accuracy = 2; 
+// }

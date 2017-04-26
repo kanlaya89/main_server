@@ -3,6 +3,7 @@ var currentTopic = ""
 // ------------------------------
 // AngularJS
 app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $location) {
+    var sss = os.ENV("")
     var client = new Paho.MQTT.Client("www2.nm.cs.uec.ac.jp", 9001, 'id:' + parseInt(Math.random() * 100, 10));
 
     var sensorValue
@@ -14,7 +15,6 @@ app.controller('roomNodeSensor', function($scope, $routeParams, $rootScope, $loc
 
     // apply currentTopic as route when first open a page
     currentTopic = room + "/" + node + "/" + sensor
-
     $scope.roomNumber = room;
     $scope.nodeName = node;
     $scope.sensorType = sensorTypeObject[sensor].name
