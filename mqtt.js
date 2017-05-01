@@ -18,14 +18,14 @@ client.on('connect', function(callback) {
 });
 
 client.on('message', function(topic, payload) {
-    console.log(payload.toString())
-     console.log('Subscribed topic:', topic)
-    //topicFunction(topic, payload)
+    // console.log(payload.toString())
+    console.log('Subscribed topic:', topic)
+    topicFunction(topic, payload)
 });
 
 // ------------------------------
 // mqtt: Subscribed Topics
-var subscribedTopics = ['ping', 'test', 'get_ping',"kk"];
+var subscribedTopics = ['ping', 'get_ping'];
 for (var i in subscribedTopics) {
     client.subscribe(subscribedTopics[i]);
 }
@@ -79,20 +79,20 @@ var topicFunction = function(topic, payload) {
 
 
 // client.publish("test")
-// client.publish('get_ping')
+client.publish('get_ping')
 
 
 var mqttClient = {
 
-    publish: function(topic, message){
+    publish: function(topic, message) {
         //console.log("publish topic " + topic)
         client.publish(topic, message)
     },
-    subscribe: function(topic, message){
+    subscribe: function(topic, message) {
         client.subscribe(topic, message)
     }
 
 
 }
 module.exports.mqttClient = mqttClient
-//module.exports = client
+    //module.exports = client

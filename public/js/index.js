@@ -1,5 +1,5 @@
 var app = angular.module('myApp', ['ngRoute']);
-var socket = io.connect();
+// var socket = io.connect();
 var imported = document.createElement('script');
 
 "use strict";

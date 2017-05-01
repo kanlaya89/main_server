@@ -16,11 +16,11 @@ var app = require('./app'),
     http = require('http')
 
 
-mqtt.publish("kk","efwdw")
-mqtt.publish("test","fwwer")
+mqtt.publish("kk", "efwdw")
+mqtt.publish("test", "fwwer")
 
 server = http.createServer(app)
 
-server.listen(3002, function() {
+server.listen(3000, function() {
     console.log("Running http-server on port 3000 der")
 })
